@@ -17,17 +17,18 @@ export class Storage {
    *
    * @returns {chrome.storage.local|window.storage.local|Window.storage.local|browser.storage.local|chrome.storage.sync}
    */
-  synchronize () {
-    let section = {}
+  synchronize() {
+    let section = {};
 
     // Try to request as Chrome.
     try {
       if (chrome.storage) {
         // Check if exist sync session.
         if (chrome.storage.sync) {
-          section = chrome.storage.sync
-        } else { // Else, get local value.
-          section = chrome.storage.local
+          section = chrome.storage.sync;
+        } else {
+          // Else, get local value.
+          section = chrome.storage.local;
         }
       }
     } catch (e) {}
@@ -35,19 +36,19 @@ export class Storage {
     // Try to request as Window.
     try {
       if (window.storage) {
-        section = window.storage.local
+        section = window.storage.local;
       }
     } catch (e) {}
 
     // Try to request as Browser.
     try {
       if (browser.storage) {
-        section = browser.storage.local
+        section = browser.storage.local;
       }
     } catch (e) {}
 
     // Return element of session.
-    return section
+    return section;
   }
 
   /**
@@ -58,12 +59,12 @@ export class Storage {
    * @param {Object} keys
    * @return {Primise}
    */
-  save (keys) {
-    return new Promise(resolve => {
+  save(keys) {
+    return new Promise((resolve) => {
       this.synchronize().set(keys, () => {
-        resolve(true)
-      })
-    })
+        resolve(true);
+      });
+    });
   }
 
   /**
@@ -76,12 +77,12 @@ export class Storage {
    * @param {Object} keys
    * @return {Primise}
    */
-  get (keys) {
-    return new Promise(resolve => {
-      this.synchronize().get(keys, items => {
-        resolve(items)
-      })
-    })
+  get(keys) {
+    return new Promise((resolve) => {
+      this.synchronize().get(keys, (items) => {
+        resolve(items);
+      });
+    });
   }
 
   /**
@@ -90,13 +91,13 @@ export class Storage {
    * @param {Object} keys
    * @return {Primise}
    */
-  remove (keys) {
-    return new Promise(resolve => {
-      this.synchronize().remove(keys, items => {
-        resolve(items)
-      })
-    })
+  remove(keys) {
+    return new Promise((resolve) => {
+      this.synchronize().remove(keys, (items) => {
+        resolve(items);
+      });
+    });
   }
 }
 
-export const storage = new Storage()
+export const storage = new Storage();

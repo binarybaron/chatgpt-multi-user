@@ -8,17 +8,16 @@
 
   "content_scripts": [
     {
-      "matches": ["https://example.com/*"],
-      "js": [
-        "dist/main.js"
-      ],
-      "run_at": "document_end"
+      "matches": ["https://chat.openai.com/*"],
+      "js": ["dist/main.js"],
+      "run_at": "document_start"
     }
   ],
 
-  "options_ui": {
-    "page": "dist/options.html",
-    "chrome_style": true
+  "web_accessible_resources": ["dist/fetch_override.js"],
+
+  "externally_connectable": {
+    "matches": ["https://chat.openai.com/*"]
   },
 
   "icons": {
@@ -35,7 +34,9 @@
     "activeTab",
     "storage",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking"
   ],
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"

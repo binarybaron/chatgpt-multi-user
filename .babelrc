@@ -1,3 +1,14 @@
 {
-    presets: [ 'env', 'stage-0' ]
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "esmodules": true // Target environments that support ES modules
+        },
+        "useBuiltIns": "usage",
+        "corejs": 3
+      }
+    ]
+  ]
 }
