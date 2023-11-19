@@ -36,8 +36,14 @@
     "http://*/*",
     "https://*/*",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "scripting",
+    "permissions"
   ],
+
+  "background": {
+    "service_worker": "dist/background.js"
+  },
 
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';"
 }
