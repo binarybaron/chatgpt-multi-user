@@ -2,10 +2,19 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import sqlite3 from 'sqlite3';
 import cors from 'cors';
+import {Client} from "pg";
+
 
 // Initialize express and sqlite3
 const app = express();
-const db = new sqlite3.Database('conversations.db');
+const db = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+
+db.connect();
 
 app.use(cors({
     origin: 'https://chat.openai.com'
@@ -15,16 +24,23 @@ app.use(cors({
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
-// Create the table
-db.serialize(() => {
-    db.run(`CREATE TABLE IF NOT EXISTS conversations (
-    user_id TEXT,
-    subuser_name TEXT,
-    conversation_id TEXT,
-    PRIMARY KEY (user_id, conversation_id)
-  )`);
-});
+const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS conversations (
+        user_id TEXT,
+        subuser_name TEXT,
+        conversation_id TEXT,
+        PRIMARY KEY (user_id, conversation_id)
+    );
+`;
 
+
+db.query(createTableQuery, (err, res) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log("Table is successfully created");
+});
 
 // Endpoint to assign a conversation
 app.post('/assign-conversation', (req, res) => {
@@ -35,7 +51,7 @@ app.post('/assign-conversation', (req, res) => {
     }
 
     const sql = `REPLACE INTO conversations (user_id, subuser_name, conversation_id) VALUES (?, ?, ?)`;
-    db.run(sql, [user_id, subuser_name, conversation_id], (err) => {
+    db.query(sql, [user_id, subuser_name, conversation_id], (err) => {
         if (err) {
             return res.status(500).send(err.message);
         }else {
@@ -52,7 +68,7 @@ app.post('/delete-subuser', (req, res) => {
     }
 
     const sql = `DELETE FROM conversations WHERE user_id = ? AND subuser_name = ?`;
-    db.run(sql, [user_id, subuser_name], (err) => {
+    db.query(sql, [user_id, subuser_name], (err) => {
         if(err) {
             return res.status(500).send(err.message);
         }else {
@@ -69,7 +85,7 @@ app.get('/get-mappings', (req, res) => {
     }
 
     const sql = `SELECT conversation_id, subuser_name FROM conversations WHERE user_id = ?`;
-    db.all(sql, [user_id], (err, rows) => {
+    db.query(sql, [user_id], (err, rows) => {
         if (err) {
             return res.status(500).send(err.message);
         }
@@ -85,11 +101,11 @@ app.get('/get-subusers', (req, res) => {
     }
 
     const sql = `SELECT DISTINCT subuser_name FROM conversations WHERE user_id = ?`;
-    db.all(sql, [user_id], (err, rows: {subuser_name: string}[]) => {
+    db.query(sql, [user_id], (err, rows) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        res.json(rows.map(row => row.subuser_name));
+        res.json((rows as {subuser_name: string}[]).map(row => row.subuser_name));
     });
 });
 

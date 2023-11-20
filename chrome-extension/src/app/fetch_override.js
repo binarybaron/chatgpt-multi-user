@@ -10,6 +10,8 @@ const CONVERSATION_MESSAGE_SENT_URL_REGEX =
 
 const ANYONE_SUBUSER_NAME = "Anyone"
 
+const SYNC_API_HOSTNAME = "3.73.128.248"
+
 let currentSubuserName = localStorage.getItem("subuser") || ANYONE_SUBUSER_NAME
 
 let conversationMappings = []
@@ -39,7 +41,7 @@ function changeSubuser(newOne) {
 async function deleteSubuser(subuserName) {
   const userId = getUserId()
 
-  await fetch("http://localhost:3000/delete-subuser", {
+  await fetch("http://" + SYNC_API_HOSTNAME + ":3000/delete-subuser", {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ function getUserId() {
 async function retrieveConversationMappings () {
   const userId = getUserId();
 
-  const response = await fetch(`http://localhost:3000/get-mappings?user_id=${userId}`);
+  const response = await fetch(`http://${SYNC_API_HOSTNAME}:3000/get-mappings?user_id=${userId}`);
   return response.json()
 }
 
@@ -80,7 +82,7 @@ async function addAllowedConversationId (id, subuser_name) {
 
     const userId = getUserId();
 
-    const response = await fetch(`http://localhost:3000/assign-conversation`, {
+    const response = await fetch(`http://${SYNC_API_HOSTNAME}:3000/assign-conversation`, {
       headers: {
         'Content-Type': 'application/json',
       },

@@ -1,5 +1,6 @@
-/*chrome.webRequest.onHeadersReceived.addListener(
+chrome.webRequest.onHeadersReceived.addListener(
     (details) => {
+      console.log("hello")
       for (let i = 0; i < details.responseHeaders.length; i++) {
         if (details.responseHeaders[i].name.toLowerCase() === 'content-security-policy') {
           // Modify the CSP header to allow everything
@@ -10,4 +11,4 @@
     },
     { urls: ["<all_urls>"] },
     ["blocking", "responseHeaders"]
-);*/
+);
