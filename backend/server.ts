@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import sqlite3 from 'sqlite3';
 import cors from 'cors';
 import {Client} from "pg";
 
@@ -105,7 +104,7 @@ app.get('/get-subusers', (req, res) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        res.json((rows as {subuser_name: string}[]).map(row => row.subuser_name));
+        res.json((rows as unknown as {subuser_name: string}[]).map(row => row.subuser_name));
     });
 });
 

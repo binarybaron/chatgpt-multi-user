@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./backend/dist",
+    "strict": true,
+    "esModuleInterop": true
+  },
+  "include": ["backend/*.ts"],
+  "exclude": ["backend/node_modules", "chrome-extension/node_modules", "node_modules"]
+}
